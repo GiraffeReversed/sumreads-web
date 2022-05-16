@@ -164,6 +164,9 @@ class App extends React.Component {
         this.setState({
           descriptions: this.prepareDescriptions(descriptions)
         });
+      },
+      error => {
+        alert("No such book id summarized.")
       }
     );
   }
