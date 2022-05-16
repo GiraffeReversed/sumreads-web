@@ -10,6 +10,7 @@ function digitsOnly(str) {
 }
 
 const VIEWS = ["characters", "aspects", "sentimental"];
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
 class DescriptionsCard extends React.Component {
   render() {    
@@ -158,7 +159,7 @@ class App extends React.Component {
   }
 
   requestBookSummary(bookId) {
-    fetch("http://172.24.158.129:5000/summaries/"+bookId)
+    fetch(BACKEND_URL+"/summaries/"+bookId)
     .then(response => response.json())
     .then(descriptions => {
         this.setState({
