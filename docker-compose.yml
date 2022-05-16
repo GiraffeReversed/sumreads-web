@@ -5,8 +5,8 @@ services:
     build:
       context: .
       dockerfile: DockerfileServer
-    ports:
-      - 5000:5000
+    # ports: # This should be commented out in prod, but can be uncommented in dev.
+    #   - 5000:5000
     restart: unless-stopped
 
   frontend:
@@ -14,14 +14,16 @@ services:
       context: .
       dockerfile: DockerfileFrontend
       args:
-        REACT_APP_BACKEND_URL: http://localhost:5000
-    ports:
-      - 80:80
+        # REACT_APP_BACKEND_URL: http://localhost:5000
+        REACT_APP_BACKEND_URL: https://sumreads_api.rechtackova.cz
+    # ports:  # This should be commented out in prod, but can be uncommented in dev.
+    #   - 80:80
     restart: unless-stopped
 
 
-# networks:
-#   default:
-#     external:
-#       name: dockerInternal
+# This should be uncommented in prod, but can commented out in dev.
+networks:
+  default:
+    external:
+      name: dockerInternal
 
