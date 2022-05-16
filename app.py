@@ -22,7 +22,6 @@ def get_summary_path(zip, book_id):
 
 @app.route("/summaries/<string:book_id>", methods=["GET"])
 def send_summarized(book_id: str):
-    print("BEGIN!")
     if not book_id.isdecimal():
         return {"message": "Don't even try"}, 400
 
