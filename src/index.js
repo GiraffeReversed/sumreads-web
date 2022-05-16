@@ -34,7 +34,7 @@ class DescriptionsCard extends React.Component {
 class DescriptionsPanel extends React.Component {
   render() {
     return (
-      <div className="row row-cols-1 row-cols-md-3 g-4" style={{display: this.props.display}}>
+      <div className="row row-cols-1 row-cols-md-3 g-4">
         {this.props.descss.map((entry, i) => <DescriptionsCard key={i} word={entry[0]} descs={entry[1]} />)}
       </div>
     );
@@ -53,21 +53,27 @@ class AllDescriptionsPanel extends React.Component {
   render() {
     let descriptions = this.props.descriptions;
     return (
-    <div className="card text-center">
-      <div className="card-header">
-        <ul className="nav nav-tabs card-header-tabs">
+    <div className="card">
+      <div className="card-header pb-0 border-bottom-0">
+      <ul className="nav nav-tabs" id="viewTabsNav" role="tablist">
           {VIEWS.map((view, i) =>
-            <li className="nav-item" key={i}>
-              <button className={"nav-link " + (view == this.state.currentView ? 'active' : '')} onClick={() => this.setState({currentView: view})}>
+        <li className="nav-item" role="presentation" key={i}>
+          <button
+            className={"nav-link" + (i == 0 ? " active" : "")} id={view + "ViewTab"} data-bs-toggle="tab"
+            data-bs-target={"#"+view+"ViewTabContent"} type="button" role="tab" aria-controls={view+"ViewTabContent"}
+            aria-selected={i == 0 ? "true" : "false"}>
                 {view}
               </button>
             </li>
           )}
         </ul>
       </div>
-      <div className="card-body">
+      <div className="tab-content" id="viewTabsContent">
         {VIEWS.map((view, i) => 
-          <DescriptionsPanel key={i} descss={descriptions[view]} display={view == this.state.currentView ? "flex" : "none"}/>
+        <div className={"tab-pane m-3" + (i == 0 ? " show active" : "")} id={view+"ViewTabContent"} role="tabpanel" key={i}
+          aria-labelledby={view + "ViewTab"}>
+          <DescriptionsPanel descss={descriptions[view]} />
+        </div>
         )}
       </div>
     </div>
