@@ -33,7 +33,7 @@ def send_summarized(book_id: str):
             return {"message" : "No such book summarized"}, 404
 
         contents = path.read_text()
-        return Response(contents, mimetype="text/json")
+        return Response(contents, mimetype="text/json", headers={"access-control-allow-origin": "*"})
 
 
 # rightfully stolen from
