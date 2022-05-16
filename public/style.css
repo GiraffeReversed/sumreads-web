@@ -1,0 +1,37 @@
+:root {
+    --bs-body-rgb-alt: 50, 50, 50;
+}
+
+body {
+    background-color: #d1d1d1;
+    background-image: url("black-thread.png");
+    background-size: max(4%, 49px) auto;
+}
+
+html.dark body {
+    background-color: #090909;
+}
+
+.navbar {
+    background-color: #bbbbbb;
+}
+
+html.dark .navbar {
+    background-color: #3b3b3b;
+}
+
+.content {
+    background-color: #ebebebd1;
+}
+
+html.dark .content {
+    background-color: #151515e6;
+}
+
+.modal .bi::before {
+    width: 20px;
+}
+
+html {
+    scroll-padding-top: 56px;
+}
