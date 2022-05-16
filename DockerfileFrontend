@@ -1,0 +1,22 @@
+FROM node:14 as build-stage
+
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+ARG REACT_APP_BACKEND_URL
+ENV REACT_APP_BACKEND_URL $REACT_APP_BACKEND_URL
+# ENV REACT_APP_BACKEND_URL "http://localhost:5000"
+
+COPY ./ .
+RUN npm run build
+
+# ----
+
+FROM nginx as production-stage
+
+RUN mkdir /app
+COPY --from=build-stage /app/build /app
+COPY config/nginx_frontend.conf /etc/nginx/nginx.conf
+
+CMD nginx -g "daemon off;"

@@ -1,0 +1,29 @@
+version: '3'
+services:
+
+  flask:
+    build:
+      context: .
+      dockerfile: DockerfileServer
+    # ports: # This should be commented out in prod, but can be uncommented in dev.
+    #   - 5000:5000
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: DockerfileFrontend
+      args:
+        # REACT_APP_BACKEND_URL: http://localhost:5000
+        REACT_APP_BACKEND_URL: https://sumreads_api.rechtackova.cz
+    # ports:  # This should be commented out in prod, but can be uncommented in dev.
+    #   - 80:80
+    restart: unless-stopped
+
+
+# This should be uncommented in prod, but can commented out in dev.
+networks:
+  default:
+    external:
+      name: dockerInternal
+
