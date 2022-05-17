@@ -4,6 +4,16 @@ import './index.css';
 import WordCloud from 'wordcloud';
 // import { cloneDeep } from 'lodash';
 
+// Load wink-nlp package  & helpers.
+const winkNLP = require( 'wink-nlp' );
+// Load english language model — light web version.
+const model = require( 'wink-eng-lite-web-model' );
+// Instantiate winkNLP.
+const nlp = winkNLP( model, ["sentiment"] );
+// const nlp = require( 'wink-nlp-utils' );
+const its = nlp.its;
+const as = nlp.as;
+
 // rightfully stolen from
 // https://stackoverflow.com/questions/1779013/check-if-string-contains-only-digits
 function digitsOnly(str) {
@@ -37,22 +47,19 @@ class DescriptionsCard extends React.Component {
     canvas.width = 2 * scale;
     canvas.height = 1 * scale;
     
-    let list = this.props.descs.join(" ").split(" ");
-    let result = {};
-    for (let word of list) {
-      if (word in result) {
-        result[word] += 1;
-      } else {
-        result[word] = 1;
-      }
+    let doc = nlp.readDoc(this.props.descs.join(" "));
+    let result = doc.tokens().filter(w => !w.out(its.stopWordFlag)).out( its.value, as.freqTable );
+
+    let sum = result.reduce((partial, e) => partial + e[1], 0);
+    let i = 0;
+    while (result.length - i > 20 && result[i][1] / sum > 0.04) {
+      sum -= result[i][1];
+      i += 1;
     }
     
-    result = Object.entries(result);
-    result.sort((ea, eb) => eb[1] - ea[1]);
-    result = result.slice(0, 200);
+    result = result.slice(i, i + 200);
     
     let highest = Math.max(...result.map(entry => entry[1]));
-    // let sum = result.reduce((partial, e) => partial + e[1], 0);
 
     result.forEach(entry => {
       entry[1] = Math.floor(100 * entry[1] / highest);
@@ -72,6 +79,19 @@ class DescriptionsCard extends React.Component {
         maxRotation: 3.1415/2, // 90°
         rotationSteps: 2,
         shape:"square",
+        color: function (word, weight) {
+          function getColor(value){
+            if (Math.abs(value) < 0.001)
+              return "rgb(120, 120, 120)";
+            value = (-value + 1) / 2;
+            //value from 0 to 1
+            var hue=((1-value)*120).toString(10);
+            return ["hsl(",hue,",100%,30%)"].join("");
+          }
+          let doc = nlp.readDoc(word);
+          let val = doc.sentences().itemAt(0).out(its.sentiment);
+          return getColor(val);
+        },
       }
     );
   }
