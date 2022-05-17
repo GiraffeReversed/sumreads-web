@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import WordCloud from 'wordcloud';
 // import { cloneDeep } from 'lodash';
 
 // rightfully stolen from
@@ -17,7 +18,7 @@ class DescriptionsCard extends React.Component {
     return (
       <div className="col">
       <div className="card description-card">
-        {/* <img src="..." className="card-img-top" alt="..."/> */}
+        <div className="card-img-top"><canvas id={this.props.word + "Canvas"} /></div>
         <div className="card-body">
           <h5 className="card-title">{this.props.word}</h5>
           <h6 className="card-subtitle mb-2 text-muted small">{this.props.descs.length} descriptions</h6>
@@ -28,7 +29,59 @@ class DescriptionsCard extends React.Component {
       </div>
       </div>
     );
+  }
 
+  setupWordCloud() {
+    let canvas = document.getElementById(this.props.word+"Canvas");
+    let scale = 300;
+    canvas.width = 2 * scale;
+    canvas.height = 1 * scale;
+    
+    let list = this.props.descs.join(" ").split(" ");
+    let result = {};
+    for (let word of list) {
+      if (word in result) {
+        result[word] += 1;
+      } else {
+        result[word] = 1;
+      }
+    }
+    
+    result = Object.entries(result);
+    result.sort((ea, eb) => eb[1] - ea[1]);
+    result = result.slice(0, 200);
+    
+    let highest = Math.max(...result.map(entry => entry[1]));
+    // let sum = result.reduce((partial, e) => partial + e[1], 0);
+
+    result.forEach(entry => {
+      entry[1] = Math.floor(100 * entry[1] / highest);
+    });
+    
+    // let rs = 0.5;
+    // result.forEach((entry, i) => {
+    //   entry[1] = Math.floor((rs * (entry[1] / (i > 0 ? result[i - 1][1] : 1)) + (1 - rs) * entry[1]));
+    // })
+    
+    WordCloud(
+      canvas,
+      {
+        list: result,
+        fontFamily: "Courier New",
+        minRotation: 0,
+        maxRotation: 3.1415/2, // 90°
+        rotationSteps: 2,
+        shape:"square",
+      }
+    );
+  }
+
+  componentDidMount() {
+    this.setupWordCloud();
+  }
+
+  componentDidUpdate() {
+    this.setupWordCloud();
   }
 }
 
