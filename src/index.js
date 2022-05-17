@@ -60,9 +60,9 @@ class AllDescriptionsPanel extends React.Component {
           {VIEWS.map((view, i) =>
         <li className="nav-item" role="presentation" key={i}>
           <button
-            className={"nav-link" + (i == 0 ? " active" : "")} id={view + "ViewTab"} data-bs-toggle="tab"
+            className={"nav-link" + (i === 0 ? " active" : "")} id={view + "ViewTab"} data-bs-toggle="tab"
             data-bs-target={"#"+view+"ViewTabContent"} type="button" role="tab" aria-controls={view+"ViewTabContent"}
-            aria-selected={i == 0 ? "true" : "false"}>
+            aria-selected={i === 0 ? "true" : "false"}>
                 {view}
               </button>
             </li>
@@ -71,7 +71,7 @@ class AllDescriptionsPanel extends React.Component {
       </div>
       <div className="tab-content" id="viewTabsContent">
         {VIEWS.map((view, i) => 
-        <div className={"tab-pane m-3" + (i == 0 ? " show active" : "")} id={view+"ViewTabContent"} role="tabpanel" key={i}
+        <div className={"tab-pane m-3" + (i === 0 ? " show active" : "")} id={view+"ViewTabContent"} role="tabpanel" key={i}
           aria-labelledby={view + "ViewTab"}>
           <DescriptionsPanel descss={descriptions[view]} />
         </div>
