@@ -108,7 +108,7 @@ class DescriptionsCard extends React.Component {
 class DescriptionsPanel extends React.Component {
   render() {
     return (
-      <div className="row row-cols-1 row-cols-md-3 g-4">
+      <div className="row row-cols-1 row-cols-md-2 g-4">
         {this.props.descss.map((entry, i) => <DescriptionsCard key={i} word={entry[0]} descs={entry[1]} />)}
       </div>
     );
