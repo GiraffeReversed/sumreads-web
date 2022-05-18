@@ -158,7 +158,7 @@ class AllDescriptionsPanel extends React.Component {
 class BookInfoPanel extends React.Component {
   render() {
     return (
-      <div className="card">
+      <div className="card my-3">
         <div className='card-body'>
           <span>{this.props.title}</span>{this.props.series ? <span className='text-muted'> ({this.props.series} series)</span> : ""}
         </div>
@@ -199,7 +199,7 @@ class GetSummaryForm extends React.Component {
 
   render() {
     return (
-      <div className="input-group mb-3">
+      <div className="input-group mt-3">
         <input
           type="number" className="form-control" placeholder="Input book id" aria-label="Book id" aria-describedby="getSummaryButton"
           value={this.state.bookId} onChange={e => this.updateBookId(e)}
