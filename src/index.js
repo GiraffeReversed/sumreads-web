@@ -208,7 +208,8 @@ class GetSummaryForm extends React.Component {
           className="btn btn-outline-secondary" type="button" id="getSummaryButton"
           onClick={() => this.requestBookSummary()}
         >
-          Get summary
+          <span className="spinner-border spinner-border-sm visually-hidden" role="status" aria-hidden="true"></span>
+          <span> </span>Get summary
         </button>
       </div>
     );
@@ -238,14 +239,24 @@ class App extends React.Component {
   }
 
   requestBookSummary(bookId) {
+    let button = document.getElementById("getSummaryButton");
+    let spinner = button.getElementsByClassName("spinner-border")[0];
+
+    button.disabled = true;
+    spinner.classList.remove("visually-hidden");
+
     fetch(BACKEND_URL+"/summaries/"+bookId)
     .then(response => response.json())
     .then(descriptions => {
+        button.disabled = false;
+        spinner.classList.add("visually-hidden");
         this.setState({
           descriptions: this.prepareDescriptions(descriptions)
         });
       },
       error => {
+        button.disabled = false;
+        spinner.classList.add("visually-hidden");
         alert("No such book id summarized.")
       }
     );
