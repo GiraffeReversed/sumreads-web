@@ -1,5 +1,15 @@
+.hack-box {
+  width: 100%;
+  padding-top: 75%;
+  position: relative;
+}
+
 .description-card {
-  max-height: 30vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
   overflow-y: auto;
 }
 

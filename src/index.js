@@ -27,6 +27,7 @@ class DescriptionsCard extends React.Component {
   render() {    
     return (
       <div className="col">
+      <div className="hack-box">
       <div className="card description-card">
         <div className="card-img-top"><canvas id={this.props.word + "Canvas"} /></div>
         <div className="card-body">
@@ -36,6 +37,7 @@ class DescriptionsCard extends React.Component {
             {this.props.descs.map((desc, i) => <p className="card-text" key={i}>{desc}</p>)}
           </div>
         </div>
+      </div>
       </div>
       </div>
     );
