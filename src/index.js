@@ -49,28 +49,36 @@ class DescriptionsCard extends React.Component {
     canvas.width = 2 * scale;
     canvas.height = 1 * scale;
     
-    let doc = nlp.readDoc(this.props.descs.join(" "));
-    let result = doc.tokens().filter(w => !w.out(its.stopWordFlag)).out( its.value, as.freqTable );
-
-    let sum = result.reduce((partial, e) => partial + e[1], 0);
-    let i = 0;
-    while (result.length - i > 20 && result[i][1] / sum > 0.04) {
-      sum -= result[i][1];
-      i += 1;
+    let extraStopwords = new Set(Object.keys(this.props.namesMapping).flatMap(name => nlp.readDoc(name).tokens().out()));
+    if (this.props.view != "sentimental") {
+      [
+        "character", "characters", "writer", "author", "one", "first", "second", "last",
+        "whole", "book", "books", "series", "man", "woman", "place", "next",
+        "able", "read", "reader", "main", "many", "previous", "1st", "2nd", "3rd", "4th", "6th", "7th",
+        "protagonist", "girl", "boy", "male", "female", "great", "hero", "heroine",
+        "year", "years", "old", "kid", "son", "best"
+      ].forEach(w => extraStopwords.add(w));
+    } else {
+      [
+        "thing", "things", "one", "way", "part", "deal", "job", "first",
+        "book", "books", "serie", "series", "story", "stories", "read",
+        "literature", "sequel"
+      ].forEach(w => extraStopwords.add(w));
     }
     
-    result = result.slice(i, i + 200);
+    let doc = nlp.readDoc(this.props.descs.join(" "));
+    let result = doc.tokens()
+      .filter(w => {
+        return !/[\.,?!\(\)]+/.test(w.out(its.value)) && !w.out(its.stopWordFlag) && !(extraStopwords.has(w.out(its.value)));
+      })
+      .out( its.value, as.freqTable )
+      .slice(0, 200);
     
     let highest = Math.max(...result.map(entry => entry[1]));
 
     result.forEach(entry => {
       entry[1] = Math.floor(100 * entry[1] / highest);
     });
-    
-    // let rs = 0.5;
-    // result.forEach((entry, i) => {
-    //   entry[1] = Math.floor((rs * (entry[1] / (i > 0 ? result[i - 1][1] : 1)) + (1 - rs) * entry[1]));
-    // })
     
     WordCloud(
       canvas,
@@ -111,7 +119,9 @@ class DescriptionsPanel extends React.Component {
   render() {
     return (
       <div className="row row-cols-1 row-cols-md-2 g-4">
-        {this.props.descss.map((entry, i) => <DescriptionsCard key={i} word={entry[0]} descs={entry[1]} />)}
+        {this.props.descss.map((entry, i) =>
+          <DescriptionsCard key={i} word={entry[0]} descs={entry[1]} view={this.props.view} namesMapping={this.props.namesMapping} />
+        )}
       </div>
     );
   }
@@ -148,7 +158,7 @@ class AllDescriptionsPanel extends React.Component {
         {VIEWS.map((view, i) => 
         <div className={"tab-pane m-3" + (i === 0 ? " show active" : "")} id={view+"ViewTabContent"} role="tabpanel" key={i}
           aria-labelledby={view + "ViewTab"}>
-          <DescriptionsPanel descss={descriptions[view]} />
+          <DescriptionsPanel descss={descriptions[view]} view={view} namesMapping={descriptions["names_mapping"]} />
         </div>
         )}
       </div>
